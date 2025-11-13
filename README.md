@@ -20,9 +20,9 @@ word: ALU register size (depending on your architecture)
 
 size_t
 
-nobody is using undetermined size types (int, short, long, etc.) anymore
+nobody is using undetermined size types (`int`, `short`, `long`, etc.) anymore
 
-cstdint: uint8_t, uint16_t, uint32_t, uint64_t
+`cstdint`: `uint8_t`, `uint16_t`, `uint32_t`, `uint64_t`
 
 what about signed? zig-zag encoding (used in protobufs)
 
