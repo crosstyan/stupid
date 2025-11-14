@@ -23,24 +23,24 @@ hardware likes alignment more than it likes philosophical minimalism.
 
 `byte` — 8 bits. 
 
-Why 8? Historical reasons. We could have standardised on 9. Or 12. We didn’t.
+Why 8? Historical reasons. We could have standardised on 9. Or 12. We didn't.
 Now all your text, file formats, and protocols silently assume
-"8' like it was handed down from the mountain.
+"8" like it was handed down from the mountain.
 
 **MSB / LSB**: "Most Significant" and "Least Significant" bit.  
 What do you mean, "significant"? It’s just the side we decided to treat as "the
 big end."  
 
-> we're all live in the contingent shadow of history
+> we all live in the contingent shadow of history
 
 Then we get to the mess: `int`, `short`, `long`.
 
 Once upon a time, these meant something like "the machine's natural *word* size".
 
-By "word", it has the similar meaning as westen centric word: imgagine a single
-letter is a bit, a word is a meaningful unit (like syllable) made up of multiple
-letters (bits). It's not a correct analogy (you need to know information theory
-to know why), but that's how I guess the term "word" came to be.
+By "word", it has a vaguely similar flavour to the *Western-centric* idea of a "word":
+imagine a single letter is a bit, and a word is a meaningful unit made from multiple
+letters (bits). It's not a correct analogy (you'd need information theory to really
+do it justice), but that’s roughly how I imagine the term "word" stuck.
 
 That made sense when machines were small and weird. Today we have `<cstdint>`
 because nobody wants to play "guess the number of bits" anymore. We summon
@@ -51,11 +51,11 @@ Signedness is its own little horror story.
 `int32_t` vs `uint32_t` vs "some encoding that pretends to be both". ZigZag
 encoding, in protobuf, is basically a hack that says: "what if we pretended
 signed integers were just unsigned integers, but we wrapped them in a clever
-zig-zag pattern so small negative numbers compress well?""
+zig-zag pattern so small negative numbers compress well?
 
 The machine doesn't care. The ALU just sees 32 bits.
 We're the ones saying "this is an age" or "this is −1" or "this is a file
-descriptor". Types aren’t in the silicon; they live in the agreement (in human sense).
+descriptor". Types aren't in the silicon; they live in the agreement (in human sense).
 
 and for multi-byte integers, endianness.
 (spoiler: most of the time you want little-endian, except for network stuff and IBM mainframes)
@@ -189,6 +189,16 @@ numeric index. Elements are allocated consecutively in memory.
 
 except VLA (variable-length array), which just a fancy `alloca`
 
+---
+
+In flat memory, the whole point of an array is that you can find element `i` by:
+
+> `address_of(arr[i]) = base_address_of(arr) + i * sizeof(T)`
+
+This only works if `sizeof(T)` is known and fixed at compile time.
+If you don’t know the size, you can't compute the offset.
+
+
 a famous macro:
 
 ```c
@@ -244,7 +254,7 @@ In this context, I genuinely have no idea either.
 
 ### Struct
 
-Our second generic type (after [array](#array-1)).
+Our second generic type (after array)
 
 > Ross sat on the Algol 68 committee with C.A.R.Hoare in the mid-1960s,
 where his previous work on a record-like data structure (called a **plex**)
@@ -342,9 +352,9 @@ struct color {
 
 Reinterpret the same memory block in different ways.
 
-### Enum
+### Enumeration
 
-Enumunation
+Enum
 
 Just a named integer constant and Go even doesn't have enum.
 
