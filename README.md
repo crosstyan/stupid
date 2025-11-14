@@ -4,44 +4,77 @@
 
 ### Numbers (like)
 
-#### Integers
+#### Integers (a lie agreed upon)
 
-boolean: 1 or 0, true or false; non fuzzy
+Computers don’t have integers.
+
+They have bits. We’re the ones who insist that a certain pattern of bits "is a
+number", and not, say, a color, a character, or the high score of some dead
+arcade machine.
+
+We start with the simplest lie:
+
+`bool` — one bit. 1 or 0. True or false. Non-fuzzy, allegedly.
+
+Of course, the compiler will happily store it in a whole byte anyway, because
+hardware likes alignment more than it likes philosophical minimalism.
 
 > trivia: Church number
 
-byte: 8 bits (why 8? historical reasons)
+`byte` — 8 bits. 
 
-MSB/LSB: what do you mean you "significant"
+Why 8? Historical reasons. We could have standardised on 9. Or 12. We didn’t.
+Now all your text, file formats, and protocols silently assume
+"8' like it was handed down from the mountain.
 
-we're all live in the contingent shadow of history
+**MSB / LSB**: "Most Significant" and "Least Significant" bit.  
+What do you mean, "significant"? It’s just the side we decided to treat as "the
+big end."  
 
-word: ALU register size (depending on your architecture)
+> we're all live in the contingent shadow of history
 
-size_t
+Then we get to the mess: `int`, `short`, `long`.
 
-nobody is using undetermined size types (`int`, `short`, `long`, etc.) anymore
+Once upon a time, these meant something like "the machine's natural *word* size".
 
-`cstdint`: `uint8_t`, `uint16_t`, `uint32_t`, `uint64_t`
+By "word", it has the similar meaning as westen centric word: imgagine a single
+letter is a bit, a word is a meaningful unit (like syllable) made up of multiple
+letters (bits). It's not a correct analogy (you need to know information theory
+to know why), but that's how I guess the term "word" came to be.
 
-what about signed? zig-zag encoding (used in protobufs)
+That made sense when machines were small and weird. Today we have `<cstdint>`
+because nobody wants to play "guess the number of bits" anymore. We summon
+`uint32_t` and it does what it says on the tin. Mostly.
+
+Signedness is its own little horror story.
+
+`int32_t` vs `uint32_t` vs "some encoding that pretends to be both". ZigZag
+encoding, in protobuf, is basically a hack that says: "what if we pretended
+signed integers were just unsigned integers, but we wrapped them in a clever
+zig-zag pattern so small negative numbers compress well?""
+
+The machine doesn't care. The ALU just sees 32 bits.
+We're the ones saying "this is an age" or "this is −1" or "this is a file
+descriptor". Types aren’t in the silicon; they live in the agreement (in human sense).
 
 and for multi-byte integers, endianness.
 (spoiler: most of the time you want little-endian, except for network stuff and IBM mainframes)
 
 #### Decimals
 
+How do we represent decimals?
+
 ##### Fixed point
 
-how do we represent decimals?
+Naive (and underrated) approach: **fixed point** — a forgotten art.
 
-a naive approach: fixed point (a forgotten art)
+Idea: scale by 10 / 100 / 1000 etc., store as integer.  
+Problem: we have binary machines, not decimal.
 
-scale by 10/100/1000 etc. (but we have binary computers, not decimal!)
+So we usually do binary fixed-point: pick a Q-format like **Q4.4**:
 
-Q4.4 = 4 bits integer, 4 bits fraction = 0..15.9375
-
-LSB has a different meaning: 1/(2^fraction_bits) = precision
+- 4 bits integer, 4 bits fraction → range `0 .. 15.9375`
+- The LSB of fraction part means `1 / 2^fraction_bits` → here, `1/16 = 0.0625` precision.
 
 (won't discuss arithmetic here, those are implementation details)
 
@@ -49,9 +82,9 @@ LSB has a different meaning: 1/(2^fraction_bits) = precision
 
 floating point: IEEE 754 standard (single/double precision)
 
-fp32 (float), fp64 (double); fp16, fp8, fp4
+fp32 (float), fp64 (double); fp16, fp8, fp4 (latest NVIDIA GPUs support them)
 
-weight quantization (1.58bit floats)
+> trivia: neural networks and quantization
 
 needs FPU, which is a separate register set
 
@@ -72,13 +105,11 @@ worth mentioning
 
 GB2312, Big5, Shift-JIS, EUC-JP
 
-Variadic length encodings
-
 Unicode, UTF-8, UTF-16, UTF-32
 
-Indeed, we have an problem of efficiency here. (some Chinese keeps arguing about that)
-However, we have compression, so let's stop arguing about the encoding and just
-use UTF-8
+Indeed, we have an problem of efficiency here. (some Chinese keeps arguing about
+that) However, we have compression, so let's stop arguing about the encoding and
+just use UTF-8
 
 > trivia: emoji, IPA (international phonetic alphabet) and zero-width joiner
 
@@ -92,6 +123,77 @@ but I just can't resist telling this sad truth earlier.
 ### Interlude (1)
 
 it should be the end of [primitive types](https://en.wikipedia.org/wiki/C_data_types) (or [fundamental types](https://en.cppreference.com/w/cpp/language/types.html)), except the misplaced [Strings](#strings).
+
+### Array (1)
+
+Our first **generic type** -- although historically it was treated as something more
+"primitive" than generics. Languages had arrays long before they had parametric
+polymorphism.
+
+Now that we do have generics, we have to retro-fit arrays into that world. I
+like to call this hole punching: C's array is basically a hole in its type
+system.
+
+Let’s use C++ syntax instead of C, because it makes the intent explicit:
+
+```cpp
+std::array<T, N>
+```
+
+Where:
+
+- T = element type (must have a known size)
+- N = number of elements (must be a compile-time integer)
+
+This immediately raises the important question:
+
+Why must the size of T be known?
+
+Hold that thought.
+
+### Interlude (2)
+
+> Memory is flat.
+
+If that’s not obvious, go look at the memory map of a microcontroller like the STM32F411.
+
+In its reference manual, see:
+
+- Chapter 5, Figure 14: Memory map
+- Table 10: STM32F411xC/xE register boundary addresses
+
+
+It's quite hard to explain without introducing Von Neumann architecture, Harvard
+architecture, and what a instruction memory (what we call ROM/Flash) and data memory (what we call RAM) are.
+
+> trivia: there's also IO to handle; CPU is just a dumb calculator, things
+unrelated to calculation/control flow are the realm of peripherals
+
+Nowadays, most of the microcontrollers are (at least pretending to be) Von Neumann
+architecture, which means:
+
+> instructions and data are stored in the same memory space.
+
+What's my question again? "Why a known size is so important?"
+
+> memory is flat
+
+go back to array again
+
+### Array (2)
+
+> An array is a data object holding elements of the same type, identified by a
+numeric index. Elements are allocated consecutively in memory.
+> 
+> -- [GNU C Language Manual](https://www.gnu.org/software/c-intro-and-ref/manual/html_node/Arrays.html)
+
+except VLA (variable-length array), which just a fancy `alloca`
+
+a famous macro:
+
+```c
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
+```
 
 ### C-String
 
@@ -117,17 +219,9 @@ char str[6] = {0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00};
 Did I said a single quote `'` is for a single character?
 (I'm not teaching you C syntax here, just a reminder)
 
-### Array
+My opinion is here: it's a bad design, please go for slice/span/view, if you
+have a choice (often you don't, sadly)
 
-fixed-size (both count of element, also the size of element), contiguous memory block
-
-(except VLA, which just a fancy `alloca`)
-
-A confusing macro:
-
-```c
-#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
-```
 
 ### Slice/Span/View
 
@@ -150,6 +244,8 @@ In this context, I genuinely have no idea either.
 
 ### Struct
 
+Our second generic type (after [array](#array-1)).
+
 > Ross sat on the Algol 68 committee with C.A.R.Hoare in the mid-1960s,
 where his previous work on a record-like data structure (called a **plex**)
 influenced Hoare's own ideas on abstract data types...
@@ -162,6 +258,11 @@ See [Casey Muratori – The Big OOPs: Anatomy of a Thirty-five-year Mistake – 
 
 Long story short: we probably should have called it a plex instead of struct.
 (It sounds cooler, and is historically closer.)
+
+Well, it has other names: record, tuple (field name is replaced with position
+index), product type (in type theory).
+
+> trivia: algebraic data types (why product?) 
 
 Anyway, here's a struct
 
@@ -191,39 +292,28 @@ typedef struct {
 } a_plex_t;
 ```
 
-and I refuse the latter, since it's technically an anonymous struct that given a
-name via typedef.
+I refuse the latter, because technically that's:
 
-Why the `typedef` dance? cuz C struct lives in a different namespace than other types, unlike C++.
+- an anonymous struct
+- that’s been given a name only via `typedef`.
+
+It works, but the struct itself is never get registerd in the struct namespace.
+I like my structs (or plexes) named.
+
+---
+
+Why the `typedef` dance? 
+
+cuz C struct lives in a different namespace than other types, unlike C++.
+
+---
 
 Try to guess the size of `a_plex` above.
 If the answer is 9 bytes, you're tricked by alignment and padding. 
 
-to make it 9 bytes really, you always could add `__attribute__((packed))`, although the CPU might not happy (and sometimes traps you)
+to make it 9 bytes really, you always could add `__attribute__((packed))`, although the CPU might be not happy (and sometimes traps you)
 
 > trivia: bit-field
-
-### Interlude (2)
-
-Memory is flat.
-
-If that’s not obvious, go look at the memory map of a microcontroller like the STM32F411.
-
-In its reference manual, see:
-
-- Chapter 5, Figure 14: Memory map
-- Table 10: STM32F411xC/xE register boundary addresses
-
-
-It's quite hard to explain without introducing Von Neumann architecture, Harvard
-architecture, and what a ROM(instruction memory)/RAM(data memory) is.
-
-Nowadays, most of the microcontrollers are (pretending to be) Von Neumann
-architecture, which means:
-
-> instructions and data are stored in the same memory space.
-
-now you could look at the memory map again...
 
 
 ### Union
@@ -254,9 +344,11 @@ Reinterpret the same memory block in different ways.
 
 ### Enum
 
-Just a named integer constant. (Go even doesn't have enum)
+Enumunation
 
-(atom is way more interesting, but it's not in C)
+Just a named integer constant and Go even doesn't have enum.
+
+[atom](https://www.erlang.org/doc/system/data_types.html#atom) is way more interesting, but it's not in C.
 
 ### Interlude (3)
 
@@ -266,9 +358,17 @@ I said:
 
 Here comes [Tagged union](https://en.wikipedia.org/wiki/Tagged_union)
 
+Remember [struct](#struct)'s other name? **Product type**.
+
+Now we have **Sum type**.
+
 ### Epilogue
 
 This is the end of C types.
 (is it?)
 
+If you're the one who is familar with C, you might have noticed that there's something I (intentionally) missed.
+
 ## Assembly
+
+go back to von Neumann architecture again.
