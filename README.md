@@ -23,7 +23,7 @@ hardware likes alignment more than it likes philosophical minimalism.
 
 `byte` — 8 bits. 
 
-Why 8? Historical reasons. We could have standardised on 9. Or 12. We didn't.
+Why 8? Historical reasons. We could have standardized on 9. Or 12. We didn't.
 Now all your text, file formats, and protocols silently assume
 "8" like it was handed down from the mountain.
 
@@ -59,6 +59,116 @@ descriptor". Types aren't in the silicon; they live in the agreement (in human s
 
 and for multi-byte integers, endianness.
 (spoiler: most of the time you want little-endian, except for network stuff and IBM mainframes)
+
+##### More on endianness
+
+The problem of endianness comes from human languages/writing system.
+
+Most of the sane world writes left-to-right (like English, *modern* Chinese,
+etc), like how we write numbers: the most significant digit on the left, the
+least significant digit on the right, so called MSD (most significant digit) first,
+
+i.e.
+
+```text
+1234 = 1*10^3 + 2*10^2 + 3*10^1 + 4*10^0
+```
+
+In right-to-left scripts (Arabic, Hebrew), text flows right -> left, but the digits
+themselves are still written in the same order we use: the "1" in 1234 is still
+the thousands place, the "4" is still ones. So you get this weird hybrid: text
+goes one way, numbers another.
+
+In a hypothetical LSD (least significant digit) first writing system, numbers would be written like this:
+
+```text
+1234 = 1*10^0 + 2*10^1 + 3*10^2 + 4*10^3
+```
+
+Don't forget top-to-bottom ("column-first") writing systems (traditional
+Chinese/Japanese/Korean). If you treat the page as a 2D array, you’re
+essentially:
+
+- going down for each character in a column
+- then moving left to the next column
+
+We don't normally write numbers bottom-to-top (thankfully), but the idea of
+"which direction do we advance the position in?" is the thing that matters.
+
+Back to computers.
+
+due to the flat memory model, and a given address grows direction, how would you
+interpret a multi-byte integer stored in consecutive memory addresses?
+
+```txt
+consider a uint32_t stored at address 'a':
+
+0A0B0C0D (MSB first, big-endian, like how we write/read numbers)
+    = 0x0A * 2^(8*3) + 0x0B * 2^(8*2) + 0x0C * 2^(8*1) + 0x0D * 2^(8*0)
+
+low addresses  -->  high addresses
+|a |a+1|a+2|a+3|
+|0A|0B |0C |0D |  # big-endian
+|0D|0C |0B |0A |  # little-endian
+```
+
+---
+
+We also have the problem of bit endianness (I'd call it significance).
+
+with the writing direction analogy:
+
+```txt
+low addresses --> high addresses
+------------------------------
+|hello|world|
+|world|hello| # endianness problem
+|oehll|lrwod| # significance problem
+```
+
+Here, "endianness problem" means you swapped whole words: `hello world` → `world
+hello`.  "Significance problem" means you scrambled the characters *inside* each
+word, as if the bits in a byte were being read in the opposite order.
+
+*note that, if you changes the low/high address direction, the endianness would be flipped too*
+
+Usually the significance won't be a problem (any sane system would do MSB first inside a byte)
+However, the problem of significance mostly relate to bitfields. i.e.
+
+```c
+struct bit_field_plex {
+    uint8_t a:3;
+    uint8_t b:5;
+};
+```
+
+which comes first, `a` or `b`? it depends on the compiler implementation.
+(but *usually* it's LSB as first field, and for each number of field, MSB first inside the field)
+
+*by usually I mean most of the little endian common compilers implementations, your mileage may vary*
+
+You could verify what your compiler does with this code:
+
+```cpp
+#include <cstdint>
+#include <utility> // for std::unreachable in C++23
+
+bool is_lsb_first_in_struct(){
+    struct test {
+        uint8_t all_ones: 4;
+        uint8_t all_zeros: 4;
+    } t = { .all_ones = 0b1111, .all_zeros = 0b0000 };
+    static_assert(sizeof(t) == 1, "unexpected size");
+    if (*(uint8_t*)&t == 0b11110000) {
+        return false; // msb first
+    } else if (*(uint8_t*)&t == 0b00001111) {
+        return true; // lsb first
+    } else {
+        // shouldn't happen in sane system
+        std::unreachable();
+    }
+}
+```
 
 #### Decimals
 
@@ -377,7 +487,7 @@ Now we have **Sum type**.
 This is the end of C types.
 (is it?)
 
-If you're the one who is familar with C, you might have noticed that there's something I (intentionally) missed.
+If you're the one who is familiar with C, you might have noticed that there's something I (intentionally) missed.
 
 ## Assembly
 
