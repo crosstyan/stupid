@@ -491,4 +491,33 @@ If you're the one who is familiar with C, you might have noticed that there's so
 
 ## Assembly
 
-go back to von Neumann architecture again.
+Go back to Turing machine/von Neumann architecture and
+forget the control flow `function`/`if`/`while`/`for`/`switch`/etc.
+Those are also illusions. In a sense, today's computers are not much different from
+punched tape machines.
+
+Go to [Introduction](#introduction) section first, think like a CPU. (and keep aware of the *position* you're reading)
+
+> You shouldn't read this line
+
+### Branch
+
+Branching, or changing the PC (program counter) register to a different address.
+
+...
+
+Continue reading, I know it's duplicated (if you have read properly)
+
+### Introduction
+
+register: boxes, and to do a calculation, you have to put values into boxes first.
+
+instruction set architecture (ISA): the set of instructions that the CPU understands.
+(or the minimal unit of operation that the CPU can perform)
+
+PC register: program counter, the address of the next instruction to execute, automatically incremented after each instruction fetch.
+(if no branching instructions executed)
+
+Does anybody mention branching? If you don't understand what I said, go to [Branch](#branch), otherwise, continue reading.
+
+
