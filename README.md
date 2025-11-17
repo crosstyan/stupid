@@ -511,10 +511,10 @@ Branching = changing the `PC` (program counter) register to a different address.
 In prose form:  
 “if some condition, jump to *there* instead of continuing *here*.”
 
-You’ve just done a branch: the text told you to go to another label
-(`[Introduction](#introduction-assembly)`) instead of reading straight down.
+You've just done a branch: the text told you to go to another label
+([Introduction](#introduction-assembly)) instead of reading straight down.
 
-If you’re reading this paragraph *before* reading Introduction, you’ve mis-executed
+If you're reading this paragraph *before* reading Introduction, you've mis-executed
 the program. Please go back to [Introduction](#introduction-assembly) and try again.
 
 *(Yes, I know this is duplicated if you followed the instructions properly.
@@ -544,3 +544,8 @@ Does anybody mention branching?
 
 - If you **don’t** know what that means yet, go to [Branch](#branch).
 - If you **do**, you are now allowed to keep reading past this point.
+
+### See also (Assembly)
+
+- [Learn X in Y minutes: Where X=MIPS Assembly](https://learnxinyminutes.com/mips/)
+- [A friendly introduction to assembly for high-level programmers — Hello](https://shikaan.github.io/assembly/x86/guide/2024/09/08/x86-64-introduction-hello.html)
