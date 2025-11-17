@@ -491,33 +491,56 @@ If you're the one who is familiar with C, you might have noticed that there's so
 
 ## Assembly
 
-Go back to Turing machine/von Neumann architecture and
-forget the control flow `function`/`if`/`while`/`for`/`switch`/etc.
-Those are also illusions. In a sense, today's computers are not much different from
-punched tape machines.
+Go back to Turing machines / von Neumann architecture and
+forget the high-level control flow: `function` / `if` / `while` / `for` / `switch` / etc.
+Those are also illusions.
 
-Go to [Introduction](#introduction) section first, think like a CPU. (and keep aware of the *position* you're reading)
+In a sense, today’s computers are not much different from punched-tape machines:
+a head, a tape, a position, and some rules about how to move.
 
-> You shouldn't read this line
+Before reading this section, go to [Introduction](#introduction-assembly) and
+try to **think like a CPU**.  
+(And stay aware of your *position* in the text.)
+
+> You shouldn’t read this line.
 
 ### Branch
 
-Branching, or changing the PC (program counter) register to a different address.
+Branching = changing the `PC` (program counter) register to a different address.
 
-...
+In prose form:  
+“if some condition, jump to *there* instead of continuing *here*.”
 
-Continue reading, I know it's duplicated (if you have read properly)
+You’ve just done a branch: the text told you to go to another label
+(`[Introduction](#introduction-assembly)`) instead of reading straight down.
 
-### Introduction
+If you’re reading this paragraph *before* reading Introduction, you’ve mis-executed
+the program. Please go back to [Introduction](#introduction-assembly) and try again.
 
-register: boxes, and to do a calculation, you have to put values into boxes first.
+*(Yes, I know this is duplicated if you followed the instructions properly.
+Welcome to unstructured control flow.)*
 
-instruction set architecture (ISA): the set of instructions that the CPU understands.
-(or the minimal unit of operation that the CPU can perform)
+### Introduction (Assembly)
 
-PC register: program counter, the address of the next instruction to execute, automatically incremented after each instruction fetch.
-(if no branching instructions executed)
+Registers: small boxes inside the CPU. To do a calculation, you first have to put values into boxes.
 
-Does anybody mention branching? If you don't understand what I said, go to [Branch](#branch), otherwise, continue reading.
+Instruction Set Architecture (ISA): the set of instructions the CPU understands.
+Or, if you prefer: the minimal operations the hardware can perform.
 
+`PC` register (Program Counter): the address of the **next instruction** to execute.
+If no branch happens:
 
+- fetch instruction at `PC`
+- execute it
+- increment `PC`
+- repeat
+
+If a branch happens:
+
+- set `PC` to some other address
+- execution continues there instead
+
+Does anybody mention branching?
+
+- If you **don’t** know what that means yet, go to [Branch](#branch).
+- If you **do**, you are now allowed to keep reading past this point.
