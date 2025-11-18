@@ -159,15 +159,15 @@ You could verify what your compiler does with this code:
 #include <cstdint>
 #include <utility> // for std::unreachable in C++23
 
-bool is_lsb_first_in_struct(){
-    struct test {
+constexpr bool is_lsb_first_in_struct() {
+    const struct test {
         uint8_t all_ones: 4;
         uint8_t all_zeros: 4;
     } t = { .all_ones = 0b1111, .all_zeros = 0b0000 };
     static_assert(sizeof(t) == 1, "unexpected size");
-    if (*(uint8_t*)&t == 0b11110000) {
+    if (const auto p = reinterpret_cast<uint8_t*>(&t); *p == 0b11110000) {
         return false; // msb first
-    } else if (*(uint8_t*)&t == 0b00001111) {
+    } else if (*p == 0b00001111) {
         return true; // lsb first
     } else {
         // shouldn't happen in sane system
@@ -446,7 +446,8 @@ cuz C struct lives in a different namespace than other types, unlike C++.
 Try to guess the size of `a_plex` above.
 If the answer is 9 bytes, you're tricked by alignment and padding. 
 
-to make it 9 bytes really, you always could add `__attribute__((packed))`, although the CPU might be not happy (and sometimes traps you)
+to make it 9 bytes really, you always could add `__attribute__((packed))`,
+although the CPU might be not happy (and sometimes traps you)
 
 > trivia: bit-field
 
@@ -510,7 +511,7 @@ Go back to Turing machines / von Neumann architecture and
 forget the high-level control flow: `function` / `if` / `while` / `for` / `switch` / etc.
 Those are also illusions.
 
-In a sense, today’s computers are not much different from punched-tape machines:
+In a sense, today's computers are not much different from punched-tape machines:
 a head, a tape, a position, and some rules about how to move.
 
 Before reading this section, go to [Introduction](#introduction-assembly) and
@@ -725,15 +726,217 @@ incomplete (relate to the missing part of C types: Chekhov's gun goes fire)
 
 the return of the missing `void*`
 
-Who's the pointee? *relate to assembly primitive to operate memory*
+Who's the pointee? boring answer: *it depends*.
+(but remember: we have some registers, and a flat memory space)
 
-using Zig's model
+---
 
-- single item reference
-- many item 
-    - sentinel-terminated
-    - slice
+Assume we have two registers:
 
+* `R1` holds some integer value (what we call an immediate value)
+* `R2` holds a **memory address**
+
+(I'm using arbitrary register names; I don't care about each ISA's actual naming scheme here.)
+
+Conceptually, in C++-ish pseudocode, think:
+
+```cpp
+int32_t R1;
+int32_t* R2;
+
+static_assert(sizeof(R1) == 4);
+static_assert(sizeof(R2) == 4); // assuming a 32-bit architecture
+```
+
+(remember: types are just agreements about how to interpret bits; R1 and R2 are
+both small boxes of 32 bits inside the CPU, assuming a 32-bit architecture)
+
+Now, take this operation:
+
+```cpp
+R1 = R1 + *R2;
+```
+
+Read as:
+
+> Load the 32-bit value at address `R2`, add it to `R1`, store the result back
+into `R1`.
+
+On x86-ish assembly, that’s exactly:
+
+```asm
+add R1, [R2]    ; R1 = R1 + *(int32_t*)R2
+```
+
+On ARM (A32) it would be two instructions, because ARM separates load and ALU ops:
+
+```asm
+LDR  R3, [R2]   ; R3 = *(int32_t*)R2
+ADD  R1, R1, R3 ; R1 = R1 + R3
+```
+
+On RISC-V (RV32):
+
+```asm
+lw   t0, 0(R2)  # t0 = *(int32_t*)R2
+add  R1, R1, t0 # R1 = R1 + t0
+```
+
+Same story: one register used as a **pointer**, a load, then an add.
+
+---
+
+Now the opposite direction: writing back through the pointer.
+
+In C++-ish form:
+
+```cpp
+*R2 = *R2 + R1;
+```
+
+Read as:
+
+> Load the 32-bit value at address `R2`, add `R1`, write it back to the same address.
+
+x86-ish:
+
+```asm
+add [R2], R1    ; *(int32_t*)R2 = *(int32_t*)R2 + R1
+```
+
+ARM:
+
+```asm
+LDR  R3, [R2]   ; R3 = *(int32_t*)R2
+ADD  R3, R3, R1 ; R3 = R3 + R1
+STR  R3, [R2]   ; *(int32_t*)R2 = R3
+```
+
+RISC-V:
+
+```asm
+lw   t0, 0(R2)  # t0 = *(int32_t*)R2
+add  t0, t0, R1 # t0 = t0 + R1
+sw   t0, 0(R2)  # *(int32_t*)R2 = t0
+```
+
+---
+
+The important part isn't the exact opcode spelling; it's the pattern:
+
+* **Pointer** = "a register whose bits we choose to interpret as an address"
+* `*ptr` in C/C++ = "issue a load/store instruction using that register as the base address"
+
+So when we say in C:
+
+```cpp
+extern int32_t some_arbitary_number;
+
+int32_t *p = &some_arbitary_number;
+int32_t x = *p;
+*p = x + 1;
+```
+
+On a RISC-y ISA, the CPU sees something morally equivalent to:
+
+```asm
+# assume p is in a register, say a0
+
+lw   t0, 0(a0)    # t0 = *(int32_t*)p
+add  t0, t0, 1    # t0 = t0 + 1
+sw   t0, 0(a0)    # *(int32_t*)p = t0
+```
+
+You see, the pointer isn’t some high-level magic: it’s just the language exposing the
+**primitive load/store pattern** the ISA already has.
+
+You also see that high-level languages mostly avoid talking about **specific numeric addresses** directly:
+
+- you name a variable (`some_arbitrary_number`),
+- the compiler/linker decide *where* it lives,
+- you use `&` to get its address, and `*` to read/write through it.
+
+The only common exceptions are things like **memory-mapped I/O registers**, which must live at fixed addresses (because the hardware says so).
+
+You *can* still control variable placement manually:
+
+- via linker scripts,
+- attributes (`__attribute__((section("...")))`, etc.),
+- storage class specifiers in C/C++ (`static`, `extern`, etc.),
+
+but in ordinary code it’s usually discouraged or just unnecessary.
+
+Most of the time, you let the toolchain pick addresses, and you think in terms of:
+
+- **names** (symbols, variables)
+- and **relationships** (pointers between them),
+
+while the CPU only ever sees:
+
+- registers full of bits,
+- and load/store instructions using those bits as addresses.
+
+---
+
+What makes pointers so hard to grasp in C is that C **mixes multiple concepts into one syntax**.
+
+Let’s borrow Zig’s pointer model to clarify what’s going on:
+
+* **single item reference**: `*T`
+
+  > "This points to exactly one `T`."
+* **many items, unknown length**: `[*]T`
+
+  > "This points to the first element of some contiguous `T`s. I don’t know how many."
+* **sentinel-terminated**: `[*:0]T`
+
+  > "Many items, and you promise there’s a special terminator value (`0` here) at the end."
+  > This is what a C string really is: `[*:0]u8` a.k.a. `char*` with `\0` at the end.
+* **slice**: `[]T`
+
+  > “A fat pointer: `{ ptr: *T, len: usize }`.
+  > I know *where* it starts and *how many* elements there are.”
+
+These are **different ideas**:
+
+* "exactly one thing"
+* "an array I can walk but don’t know the length"
+* "an array that ends when I hit a sentinel"
+* "an array with an explicit length"
+
+In C, they are all just fucking `T*`.
+
+* pointer to single `int`? → `int*`
+* first element of an array of `int`? → `int*`
+* pointer to a C-string (null-terminated `char` array)? → `char*`
+* beginning of a memory-mapped register block? → `uint32_t*`
+* “slice” (pointer + length)? → usually `T*` + `size_t`… separately
+
+The language does **not** encode:
+
+* whether there's 1 element or many,
+* whether it's safe to index `p[10]`,
+* whether there's a terminator,
+* whether you're allowed to write to it,
+* whether it's even “normal memory” or MMIO.
+
+You get one syntax (`T*`) trying to wear all those hats at once.
+
+That's why beginners (and honestly, plenty of non-beginners) get lost:
+
+the **machine model** is simple:
+
+  > here is an address, do a load/store
+
+but the **semantic model** (what this pointer *means*) is carried purely in:
+
+  * comments,
+  * conventions,
+  * and whatever lives in the programmer’s head.
+
+Zig's pointer types are basically just the language admitting:
+
+> These are different shapes of 'pointer', let's name them separately.
 
 ### Symbol
 
@@ -741,7 +944,7 @@ incomplete
 
 mangling/function overloading/linking
 
-and what `static` really means (in both linking and storage lifetime sense)
+and what `static` really means (in both linkage and storage lifetime sense)
 
 ### See also (Assembly)
 
@@ -752,15 +955,31 @@ and what `static` really means (in both linking and storage lifetime sense)
 
 ## Lisp
 
-incomplete: not really about Lisp language, which is boring
+incomplete: not really about Lisp the language, which is boring
 
-(Python is the lisp less cool)
+(a deceving chapter title, I know, but can't think of a better one)
 
-repl (and jupyter/nREPL) shell and GUI
+(a different primitives)
+
+(Python is the Lisp less cool)
+
+introduction of the idea of interpreter
+
+REPL (and Jupyter/nREPL), shell and GUI
 
 the React idea: UI just a function of state
 
-introduction of the idea of interpreter
+map/filter/reduce
+
+array programming, and there's a language called APL/BQN/J/K
+(but Matlab & NumPy & Julia are the same idea in disguise)
+
+typeclasses/concepts/protocols/interfaces/traits: ad-hoc polymorphism
+
+What's a monad? 
+
+(note to self: how to pack these loose ideas together?)
+
 
 ## Time
 
