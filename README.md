@@ -75,7 +75,8 @@ themselves are still written in the same order we use: the "1" in 1234 is still
 the thousands place, the "4" is still ones. So you get this weird hybrid: text
 goes one way, numbers another.
 
-In a hypothetical LSD (least significant digit) first writing system, numbers would be written like this:
+In a hypothetical LSD (least significant digit) first writing system, numbers
+would be written like this:
 
 ```text
 1234 = 1*10^0 + 2*10^1 + 3*10^2 + 4*10^3
@@ -96,6 +97,7 @@ Back to computers.
 **MSB / LSB**: "Most Significant" and "Least Significant" bit.  
 "Significance" here means "how much weight this position carries *as a number*":
 the MSB contributes the largest power of 2, the LSB the smallest.
+If we have an operation of comparison (`compare` function), we would have the problem of
 
 Fortunately, nobody uses a "middle-endian" writing system where the most
 significant digit lives in the middle... as far as I know. Consider it an
