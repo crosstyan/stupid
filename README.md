@@ -230,7 +230,7 @@ just use UTF-8
 This section should have been placed after [Array](#array),
 but I just can't resist telling this sad truth earlier.
 
-### Interlude (1)
+### Interlude (end of primitive types)
 
 it should be the end of [primitive types](https://en.wikipedia.org/wiki/C_data_types) (or [fundamental types](https://en.cppreference.com/w/cpp/language/types.html)), except the misplaced [Strings](#strings).
 
@@ -261,7 +261,7 @@ Why must the size of T be known?
 
 Hold that thought.
 
-### Interlude (2)
+### Interlude (memory is flat)
 
 > Memory is flat.
 
@@ -470,7 +470,7 @@ Just a named integer constant and Go even doesn't have enum.
 
 [atom](https://www.erlang.org/doc/system/data_types.html#atom) is way more interesting, but it's not in C.
 
-### Interlude (3)
+### Interlude (tagged union)
 
 I said:
 
@@ -544,6 +544,108 @@ Does anybody mention branching?
 
 - If you **don’t** know what that means yet, go to [Branch](#branch).
 - If you **do**, you are now allowed to keep reading past this point.
+
+### Interlude (memory input/output)
+
+When we say the word *register*, we might mean a quite different thing
+
+- Flip-flop/latch, who remember bits (do they really "remember"/"memorize"? or
+are we anthropomorphizing circuits?)
+- the small boxes inside the CPU, where we do calculations (ALU's)
+- thouse indicate the state of CPU (like PC, SP, etc) they have nothing to do
+with calculation
+- some special memory addresses, when we read/write to them, it's not really
+memory access (although we still treat them as memory, as von Neumann's magic
+suggests), but actually interact with peripherals (or, parts that are not part
+of CPU core, not involving control flow or calculation)
+- some field in protocol like Modbus, where specific the abstraction index of
+the target of operation (you can't still do much except read/write in syntax
+sense, but anything could happen, including trigger a nuclear missile launch)
+
+All of these get casually called "register" in various contexts.
+Do these match a rigorous CS definition of "register"? Not really.
+Let’s ask a dictionary what it thinks:
+
+> a device (as in a computer) for storing small amounts of data
+especially : one in which data can be both stored and operated on (Merriam-Webster)
+
+> A mechanical indicating device or apparatus; esp. one which automatically
+records data or measurements. (Oxford English Dictionary)
+
+> In an adding machine or a calculator (mechanical or electronic): a device or
+system for displaying or storing the results of arithmetical operations or other
+numerical data. (Oxford English Dictionary)
+
+> Computing. A temporary memory location able to store only a single string of
+bits (typically equal in size to the maximum word length allowed by a computer's
+architecture), but having a high access speed; (in later use) esp. one of a set
+of such locations in a central processing unit. (Oxford English Dictionary)
+
+So, to positively define "register" is fuzzy and context-dependent.
+But we can at least say what a register is not:
+
+> memory in broder sense, nontheless the data or instruction memory, reguardless the medium:
+RAM, ROM, Flash, disk, tape, punch card, etc.
+
+To make things more confusing, von Neumann architecture encourages us to *pretend*:
+
+> instructions, data, and peripheral registers all live in **one flat address space**,
+> and we use the *same load/store instructions* to touch all of them.
+
+(That's true on e.g. ARM Cortex-M with memory-mapped I/O. On x86, there's also a
+separate `in`/`out` I/O space, just to keep life spicy.)
+
+So you do:
+
+```c
+uint32_t *p = (uint32_t *)0x40021000;
+uint32_t x = *p;      // looks like "just read memory"
+*p = x | 0x01;        // looks like "just write memory"
+```
+
+and what actually happens is:
+
+* you just turned on a GPIO port,
+* or started an ADC conversion,
+* or acknowledged an interrupt,
+* or something equally non-RAM-ish.
+
+> welcome to the confusing world of computer architecture
+
+If you want a concrete example, open the STM32F411 reference manual and look at:
+Table 10. STM32F411xC/xE register boundary addresses
+
+Try to tell, just from the map:
+
+- which region is instruction memory (Flash),
+- which region is data memory (SRAM),
+- which regions are peripheral I/O registers.
+
+Those peripheral "registers" are not RAM. They only pretend to be memory
+locations so the CPU can talk to them with the same load/store machinery.
+
+They're just doors in the flat address space, leading outside the nice clean
+world of "bits in memory" into motors, LEDs, UARTs, radios, and other rude
+realities.
+
+And it's not the only way to do it: remember the Modbus example?  
+You'll meet similar "registers" in I2C, SPI, CAN, etc.
+
+In all of these, the "register" you read/write is just an **addressed slot in a protocol**.  
+What actually happens behind that slot is completely up to the device:
+
+- maybe it really is a flip-flop
+- maybe it's a FIFO
+- maybe it's a write-only command trigger
+- maybe it quietly arms a missile launch (hopefully not)
+
+The pointer, the address, the "register number"… is just the **signifier**.
+
+The signified is *void* until you bring in a specific datasheet, device, and context.
+(If you like Lacan: the signifier is empty; the meaning is not in the token, but in the
+network of relationships around it.)
+
+
 
 ### See also (Assembly)
 
