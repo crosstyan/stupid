@@ -712,7 +712,7 @@ network of relationships around it.)
 
 You only need `if` and `goto`. 
 
-However, [Go To Statement Considered Harmful](https://wiki.c2.com/?GotoConsideredHarmful).
+Indeed, [Go To Statement Considered Harmful](https://wiki.c2.com/?GotoConsideredHarmful).
 In structured programming sense, Dijkstra might be right. However the "structure" itself
 is still arbitrary. (why `while` remains, but not `until`?)
 
