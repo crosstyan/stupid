@@ -144,7 +144,6 @@ Back to computers.
 **MSB / LSB**: "Most Significant" and "Least Significant" bit.  
 "Significance" here means "how much weight this position carries *as a number*":
 the MSB contributes the largest power of 2, the LSB the smallest.
-If we have an operation of comparison (`compare` function), we would have the problem of
 
 Fortunately, nobody uses a "middle-endian" writing system where the most
 significant digit lives in the middle... as far as I know. Consider it an
@@ -289,7 +288,7 @@ encoding and just use UTF-8
 
 > There's no string (in C)
 
-This section should have been placed after [Array](#array),
+This section should have been placed after [Array](#array-1),
 but I just can't resist telling this sad truth earlier.
 
 ### Interlude (end of primitive types)
