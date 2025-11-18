@@ -2,7 +2,7 @@
 
 ## Intro
 
-This documentation is intended to be read **with** a search engine or a Large Language Model (LLM) open next to you.
+This documentation is intended to be read **with** a search engine and a Large Language Model (LLM) open next to you.
 
 No prior knowledge is needed, only curiosity and patience.
 
@@ -22,7 +22,7 @@ What this documentation is **not** :
 * an x86/ARM reference
 * an OS textbook
 * a functional programming textbook
-* a step-by-step “learn to code” guide
+* a step-by-step "learn to code" guide
 
 I will happily skip "obvious" syntax, wave my hands over some details, and tell you:
 
