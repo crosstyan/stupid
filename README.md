@@ -6,7 +6,7 @@
 
 #### Integers (a lie agreed upon)
 
-Computers don’t have integers.
+Computers don't have integers.
 
 They have bits. We’re the ones who insist that a certain pattern of bits "is a
 number", and not, say, a color, a character, or the high score of some dead
@@ -26,10 +26,6 @@ hardware likes alignment more than it likes philosophical minimalism.
 Why 8? Historical reasons. We could have standardized on 9. Or 12. We didn't.
 Now all your text, file formats, and protocols silently assume
 "8" like it was handed down from the mountain.
-
-**MSB / LSB**: "Most Significant" and "Least Significant" bit.  
-What do you mean, "significant"? It’s just the side we decided to treat as "the
-big end."  
 
 > we all live in the contingent shadow of history
 
@@ -97,7 +93,15 @@ We don't normally write numbers bottom-to-top (thankfully), but the idea of
 
 Back to computers.
 
-due to the flat memory model, and a given address grows direction, how would you
+**MSB / LSB**: "Most Significant" and "Least Significant" bit.  
+"Significance" here means "how much weight this position carries *as a number*":
+the MSB contributes the largest power of 2, the LSB the smallest.
+
+Fortunately, nobody uses a "middle-endian" writing system where the most
+significant digit lives in the middle... as far as I know. Consider it an
+exercise to design such a monstrosity.
+
+Due to the flat memory model, and a given address grows direction, how would you
 interpret a multi-byte integer stored in consecutive memory addresses?
 
 ```txt
@@ -114,7 +118,7 @@ low addresses  -->  high addresses
 
 ---
 
-We also have the problem of bit endianness (I'd call it significance).
+We also have the problem of bit endianness (I'd call it significance problem).
 
 with the writing direction analogy:
 
@@ -213,13 +217,22 @@ have you ever seen `^C` in terminal? that's a `0x03`
 a beautiful word borrowed from Go language, which doesn't exist in C, but
 worth mentioning
 
-GB2312, Big5, Shift-JIS, EUC-JP
+National encoding:
 
-Unicode, UTF-8, UTF-16, UTF-32
+- GB2312
+- Big5
+- Shift-JIS
+- EUC-JP
 
-Indeed, we have an problem of efficiency here. (some Chinese keeps arguing about
-that) However, we have compression, so let's stop arguing about the encoding and
-just use UTF-8
+International encoding (Unicode):
+
+- UTF-8
+- UTF-16
+- UTF-32
+
+Indeed, we have an problem of efficiency here and some Chinese keeps arguing
+about that. However, we have compression, so let's stop arguing about the
+encoding and just use UTF-8
 
 > trivia: emoji, IPA (international phonetic alphabet) and zero-width joiner
 
