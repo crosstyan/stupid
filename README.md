@@ -14,7 +14,6 @@ No prior knowledge is needed, only curiosity and patience.
 > But if you’re curious enough, and you’re allowed to Google / ping an LLM,
 > you’ll probably find your way through anyway.
 
-You should imagine this as the *spine*, and the rest of the internet as *flesh* you can grow on demand.
 
 What this documentation is **not** :
 
@@ -40,6 +39,8 @@ Roughly I only cover:
 - the *models*
 - the *connections*
 - the *taste* (at least my taste)
+
+You should imagine this as the *spine*, and the rest of the internet as *flesh* you can grow on demand.
 
 ---
 
