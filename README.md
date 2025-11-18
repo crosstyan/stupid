@@ -639,11 +639,57 @@ What actually happens behind that slot is completely up to the device:
 - maybe it's a write-only command trigger
 - maybe it quietly arms a missile launch (hopefully not)
 
-The pointer, the address, the "register number"… is just the **signifier**.
+The pointer, the address, the "register number"... is just the **signifier**.
 
 The signified is *void* until you bring in a specific datasheet, device, and context.
 (If you like Lacan: the signifier is empty; the meaning is not in the token, but in the
 network of relationships around it.)
+
+### Control Flow
+
+You only need `if` and `goto`. 
+
+However, [Go To Statement Considered Harmful](https://wiki.c2.com/?GotoConsideredHarmful).
+In structured programming sense, Dijkstra might be right. However the "structure" itself
+is still arbitrary. (why `while` remains, but not `until`?)
+
+CPU doesn't care, it only knows:
+
+- sequence: "do this, then that" (and the PC just increments)
+- unconditional jump: `goto <label>` -> set PC to label address
+- conditional jump: "if <condition> goto <label>"
+
+Those are the "primitives". 
+
+- sequence just happens naturally
+- `B` (ARM) / `JMP` (x86): unconditional jump
+- `BEQ` / `JZ`: branch if equal / jump if zero; `CBNZ`/`CBZ`: compare and branch
+if not zero/zero (ARM)
+
+// some example to desugar `while`/`for`/`switch` into `if` + `goto`
+
+---
+
+A defend of using `goto` in **C**:
+C just such a incomplete/lack of feature of a language;
+
+If C has: (note that the order is my personal priority of these features)
+
+1. closures (lambdas) with proper capture semantics
+2. `RAII` (Resource Acquisition Is Initialization)
+3. `defer` statement
+4. `try`/`catch`/`finally` so called *exception*
+
+then we could say: `goto` is dead for good.
+
+without those, error handling without `goto`, only with in the structured
+programming primitive of C is a nightmare.
+
+> At the machine level, it's all `goto` and conditional branches anyway.
+
+### Call Convention
+
+### Call Stack
 
 
 
@@ -651,3 +697,5 @@ network of relationships around it.)
 
 - [Learn X in Y minutes: Where X=MIPS Assembly](https://learnxinyminutes.com/mips/)
 - [A friendly introduction to assembly for high-level programmers — Hello](https://shikaan.github.io/assembly/x86/guide/2024/09/08/x86-64-introduction-hello.html)
+- [CONDITIONAL EXECUTION](https://azeria-labs.com/arm-conditional-execution-and-branching-part-6/)
+- [Branch instructions](https://developer.arm.com/documentation/ddi0406/c/Application-Level-Architecture/The-Instruction-Sets/Branch-instructions)
