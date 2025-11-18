@@ -657,7 +657,7 @@ CPU doesn't care, it only knows:
 
 - sequence: "do this, then that" (and the PC just increments)
 - unconditional jump: `goto <label>` -> set PC to label address
-- conditional jump: "if <condition> goto <label>"
+- conditional jump: `if <condition> goto <label>`
 
 Those are the "primitives". 
 
