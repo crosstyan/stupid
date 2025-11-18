@@ -1,5 +1,52 @@
 # Stupid
 
+## Intro
+
+This documentation is intended to be read **with** a search engine or a Large Language Model (LLM) open next to you.
+
+No prior knowledge is needed, only curiosity and patience.
+
+> ...this is a lie.
+>
+> I'm secretly expecting you to have touched at least one of:
+> C / C++ / Rust / Go / JavaScript / Python.
+>
+> But if you’re curious enough, and you’re allowed to Google / ping an LLM,
+> you’ll probably find your way through anyway.
+
+You should imagine this as the *spine*, and the rest of the internet as *flesh* you can grow on demand.
+
+What this documentation is **not** :
+
+* a C tutorial
+* an x86/ARM reference
+* an OS textbook
+* a functional programming textbook
+* a step-by-step “learn to code” guide
+
+I will happily skip "obvious" syntax, wave my hands over some details, and tell you:
+
+> Ask the LLM: *explain this thing in 5 lines*, you've seen the context.
+
+You are expected to:
+
+* look things up,
+* try tiny experiments,
+* run your own code,
+* and occasionally tell the LLM "no, that's wrong, try again".
+
+Roughly I only cover:
+
+- the *models*
+- the *connections*
+- the *taste* (at least my taste)
+
+---
+
+If you're still here after this introduction, congratulations: you are probably the target audience.
+
+Turn the page. We start with bits, and some lies about integers.
+
 ## Types
 
 ### Numbers (like)
