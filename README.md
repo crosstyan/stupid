@@ -704,6 +704,20 @@ incomplete
 
 a nudge to the implication of "Everything is continuation"
 
+### Pointer
+
+the return of the missing `void*`
+
+Who's the pointee? *relate to assembly primitive to operate memory*
+
+using Zig's model
+
+- single item reference
+- many item 
+    - sentinel-terminated
+    - slice
+
+
 ### Symbol
 
 incomplete
@@ -772,4 +786,6 @@ pre-emptive or not? that's a question
 
 incomplete
 
+function pointer -> closure -> (coroutine/generator/thread/callstack/exception) -> continuation
 
+// better idea?
