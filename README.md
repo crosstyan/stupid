@@ -673,25 +673,44 @@ if not zero/zero (ARM)
 A defend of using `goto` in **C**:
 C just such a incomplete/lack of feature of a language;
 
-If C has: (note that the order is my personal priority of these features)
+If C has (in my personal priority order): 
 
 1. closures (lambdas) with proper capture semantics
 2. `RAII` (Resource Acquisition Is Initialization)
 3. `defer` statement
 4. `try`/`catch`/`finally` so called *exception*
 
-then we could say: `goto` is dead for good.
+then we could finally say: 
+
+> `goto` is dead for good.
 
 without those, error handling without `goto`, only with in the structured
 programming primitive of C is a nightmare.
 
 > At the machine level, it's all `goto` and conditional branches anyway.
 
+and by the way: I like early returns. (but what's a `return`?)
+
 ### Call Convention
+
+> a `return` is just a special kind of `goto` to an address saved by the calling
+convention, plus some stack fixing.
+
+incomplete
 
 ### Call Stack
 
+incomplete
 
+a nudge to the implication of "Everything is continuation"
+
+### Symbol
+
+incomplete
+
+mangling/function overloading/linking
+
+and what `static` really means (in both linking and storage lifetime sense)
 
 ### See also (Assembly)
 
@@ -699,3 +718,54 @@ programming primitive of C is a nightmare.
 - [A friendly introduction to assembly for high-level programmers — Hello](https://shikaan.github.io/assembly/x86/guide/2024/09/08/x86-64-introduction-hello.html)
 - [CONDITIONAL EXECUTION](https://azeria-labs.com/arm-conditional-execution-and-branching-part-6/)
 - [Branch instructions](https://developer.arm.com/documentation/ddi0406/c/Application-Level-Architecture/The-Instruction-Sets/Branch-instructions)
+
+## Lisp
+
+incomplete: not really about Lisp language, which is boring
+
+(Python is the lisp less cool)
+
+repl (and jupyter/nREPL) shell and GUI
+
+the React idea: UI just a function of state
+
+introduction of the idea of interpreter
+
+## Time
+
+incomplete
+
+> welcome to the desert of the real
+
+first construct of non von Neumann architecture: interruption
+
+CPU frequency, and what a time base really is
+
+push/pull model (and the duality of it)
+
+## Scheduler
+
+why `delay` is bad (in `Arduino` sense)
+*blocking is dangerous/inefficient*
+
+naive round-robin loop (event loop)
+
+what's being round-robined: state machine
+
+coroutine as state machine
+
+(stateless)
+
+another way: 
+
+manupulation of stack (context switch)
+
+(stateful)
+
+priemptive or not? that's a question
+
+## Everything is continuation
+
+incomplete
+
+
