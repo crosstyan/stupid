@@ -957,26 +957,27 @@ and what `static` really means (in both linkage and storage lifetime sense)
 
 incomplete: not really about Lisp the language, which is boring
 
-(a deceving chapter title, I know, but can't think of a better one)
+(a deceiving chapter title, I know, but can't think of a better one)
 
-(a different primitives)
+Let's see what a different set of primitives could give us.
 
 (Python is the Lisp less cool)
 
-introduction of the idea of interpreter
+the idea of interpreter, without registers or a flat memory model
 
 REPL (and Jupyter/nREPL), shell and GUI
 
 the React idea: UI just a function of state
 
+interlude: typeclasses/concepts/protocols/interfaces/traits: ad-hoc polymorphism
+
 map/filter/reduce
 
-array programming, and there's a language called APL/BQN/J/K
+interlude: array programming, and there's a language called APL/BQN/J/K
 (but Matlab & NumPy & Julia are the same idea in disguise)
 
-typeclasses/concepts/protocols/interfaces/traits: ad-hoc polymorphism
-
-What's a monad? 
+epilogue: What's a monad? (plant a seed, not fully explain, just list some examples)
+(List, Optional/Maybe, Result/Either)
 
 (note to self: how to pack these loose ideas together?)
 
