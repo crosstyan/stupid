@@ -737,9 +737,13 @@ incomplete
 
 > welcome to the desert of the real
 
+CPU frequency, and what a time base really is
+
 first construct of non von Neumann architecture: interruption
 
-CPU frequency, and what a time base really is
+Timer as the simplest peripheral (from 555 to SysTick)
+*why it's necessary? CPU doesn't know time by itself*
+(and pre-emptive multitasking needs time, that's another story)
 
 push/pull model (and the duality of it)
 
@@ -758,11 +762,11 @@ coroutine as state machine
 
 another way: 
 
-manupulation of stack (context switch)
+manipulation of stack (context switch)
 
 (stateful)
 
-priemptive or not? that's a question
+pre-emptive or not? that's a question
 
 ## Everything is continuation
 
