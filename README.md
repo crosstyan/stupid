@@ -706,7 +706,7 @@ a nudge to the implication of "Everything is continuation"
 
 ### Pointer
 
-incomplete (relate to the missing of C types, Chekhov's gun)
+incomplete (relate to the missing part of C types: Chekhov's gun goes fire)
 
 the return of the missing `void*`
 
