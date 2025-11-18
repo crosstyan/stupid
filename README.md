@@ -706,6 +706,8 @@ a nudge to the implication of "Everything is continuation"
 
 ### Pointer
 
+incomplete (relate to the missing of C types, Chekhov's gun)
+
 the return of the missing `void*`
 
 Who's the pointee? *relate to assembly primitive to operate memory*
