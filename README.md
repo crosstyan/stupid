@@ -779,6 +779,21 @@ incomplete
 
 a nudge to the implication of "Everything is continuation"
 
+### Interlude (memory allocation)
+
+incomplete
+
+It looks like about stack vs heap (but actually not really)
+
+stack & heap are human constructs to manage flat memory.
+(and I permit you to have a better imagination)
+
+Zig's explicit memory allocation model
+
+Memory fragmentation
+
+Pooling (and friends, like Arena)
+
 ### Pointer
 
 incomplete (relate to the missing part of C types: Chekhov's gun goes fire)
