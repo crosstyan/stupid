@@ -800,8 +800,8 @@ Assume we have two registers:
 Conceptually, in C++-ish pseudocode, think:
 
 ```cpp
-int32_t R1;
-int32_t* R2;
+register int32_t R1;
+register int32_t* R2;
 
 static_assert(sizeof(R1) == 4);
 static_assert(sizeof(R2) == 4); // assuming a 32-bit architecture
@@ -891,8 +891,8 @@ So when we say in C:
 ```cpp
 extern int32_t some_arbitary_number;
 
-int32_t *p = &some_arbitary_number;
-int32_t x = *p;
+register int32_t *p = &some_arbitary_number; // a0
+register int32_t x = *p; // t0
 *p = x + 1;
 ```
 
