@@ -807,6 +807,10 @@ static_assert(sizeof(R1) == 4);
 static_assert(sizeof(R2) == 4); // assuming a 32-bit architecture
 ```
 
+> [!NOTE]
+> Here we are assuming block scope; Note that `register` keyword is mostly
+> deprecated in modern C++. (a invalid storage class, but we're here for demonstration purposes)
+
 (remember: types are just agreements about how to interpret bits; R1 and R2 are
 both small boxes of 32 bits inside the CPU, assuming a 32-bit architecture)
 
@@ -1003,7 +1007,7 @@ incomplete
 
 mangling/function overloading/linking
 
-and what `static` really means (in both linkage and storage lifetime sense)
+and what `static` really means (in both linkage and storage class sense)
 
 ### See also (Assembly)
 
