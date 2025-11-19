@@ -81,10 +81,11 @@ Then we get to the mess: `int`, `short`, `long`.
 
 Once upon a time, these meant something like "the machine's natural *word* size".
 
-By "word", it has a vaguely similar flavour to the *Western-centric* idea of a "word":
-imagine a single letter is a bit, and a word is a meaningful unit made from multiple
-letters (bits). It's not a correct analogy (you'd need information theory to really
-do it justice), but that’s roughly how I imagine the term "word" stuck.
+> [!NOTE]
+> By "word", it has a vaguely similar flavour to the *Western-centric* idea of a "word":
+> imagine a single letter is a bit, and a word is a meaningful unit made from multiple
+> letters (bits). It's not a correct analogy (you'd need information theory to really
+> do it justice), but that’s roughly how I imagine the term "word" stuck.
 
 That made sense when machines were small and weird. Today we have `<cstdint>`
 because nobody wants to play "guess the number of bits" anymore. We summon
@@ -123,32 +124,31 @@ themselves are still written in the same order we use: the "1" in 1234 is still
 the thousands place, the "4" is still ones. So you get this weird hybrid: text
 goes one way, numbers another.
 
-In a hypothetical LSD (least significant digit) first writing system, numbers
+In a hypothetical LSD (least significant digit) first writing system, the same numbers
 would be written like this:
+
+```text
+4321 = 4*10^0 + 3*10^1 + 2*10^2 + 1*10^3
+```
+
+while the same representation `1234` would mean:
 
 ```text
 1234 = 1*10^0 + 2*10^1 + 3*10^2 + 4*10^3
 ```
 
-Don't forget top-to-bottom ("column-first") writing systems (traditional
+> [!NOTE] 
+> Don't forget top-to-bottom ("column-first") writing systems (traditional
 Chinese/Japanese/Korean). If you treat the page as a 2D array, you’re
 essentially:
-
-- going down for each character in a column
-- then moving left to the next column
-
-We don't normally write numbers bottom-to-top (thankfully), but the idea of
-"which direction do we advance the position in?" is the thing that matters.
+>
+> - going down for each character in a column
+> - then moving left to the next column
+>
+> We don't normally write numbers bottom-to-top (thankfully), but the idea of
+> "which direction do we advance the position in?" is the thing that matters.
 
 Back to computers.
-
-**MSB / LSB**: "Most Significant" and "Least Significant" bit.  
-"Significance" here means "how much weight this position carries *as a number*":
-the MSB contributes the largest power of 2, the LSB the smallest.
-
-Fortunately, nobody uses a "middle-endian" writing system where the most
-significant digit lives in the middle... as far as I know. Consider it an
-exercise to design such a monstrosity.
 
 Due to the flat memory model, and a given address grows direction, how would you
 interpret a multi-byte integer stored in consecutive memory addresses?
@@ -164,6 +164,16 @@ low addresses  -->  high addresses
 |0A|0B |0C |0D |  # big-endian
 |0D|0C |0B |0A |  # little-endian
 ```
+
+> [!IMPORTANT] MSB/LSB
+> "Most Significant" and "Least Significant" bit.
+>
+> "Significance" here means "how much weight this position carries *as a number*":
+> the MSB contributes the largest power of 2, the LSB the smallest.
+>
+> Fortunately, nobody uses a "middle-endian" writing system where the most
+> significant digit lives in the middle... as far as I know. Consider it an
+> exercise to design such a monstrosity.
 
 ---
 
@@ -198,7 +208,8 @@ struct bit_field_plex {
 which comes first, `a` or `b`? it depends on the compiler implementation.
 (but *usually* it's LSB as first field, and for each number of field, MSB first inside the field)
 
-*by usually I mean most of the little endian common compilers implementations, your mileage may vary*
+> [!WARNING]
+> by usually I mean most of the little endian common compilers implementations, your mileage may vary
 
 You could verify what your compiler does with this code:
 
@@ -572,7 +583,8 @@ try to **think like a CPU**.
 Branching = changing the `PC` (program counter) register to a different address.
 
 In prose form:  
-“if some condition, jump to *there* instead of continuing *here*.”
+
+> if some condition, jump to *there* instead of continuing *here*.
 
 You've just done a branch: the text told you to go to another label
 ([Introduction](#introduction-assembly)) instead of reading straight down.
@@ -774,7 +786,7 @@ incomplete (relate to the missing part of C types: Chekhov's gun goes fire)
 the return of the missing `void*`
 
 Who's the pointee? boring answer: *it depends*.
-(but remember: we have some registers, and a flat memory space)
+(but remember: we only have some registers, and a flat memory space)
 
 ---
 
@@ -953,11 +965,11 @@ These are **different ideas**:
 
 In C, they are all just fucking `T*`.
 
-* pointer to single `int`? → `int*`
-* first element of an array of `int`? → `int*`
-* pointer to a C-string (null-terminated `char` array)? → `char*`
-* beginning of a memory-mapped register block? → `uint32_t*`
-* “slice” (pointer + length)? → usually `T*` + `size_t`… separately
+* pointer to single `int`? — `int*`
+* first element of an array of `int`? — `int*`
+* pointer to a C-string (null-terminated `char` array)? — `char*`
+* beginning of a memory-mapped register block? — `uint32_t*`
+* slice/view/span? — usually `T*` + `size_t` separately
 
 The language does **not** encode:
 
@@ -1006,19 +1018,25 @@ incomplete: not really about Lisp the language, which is boring
 
 (a deceiving chapter title, I know, but can't think of a better one)
 
+> Python is the Lisp less cool
+
 Let's see what a different set of primitives could give us.
 
-(Python is the Lisp less cool)
+the idea of interpreter, *without registers or a flat memory model*.
 
-the idea of interpreter, without registers or a flat memory model
+So called "declearative programming" is actually built on a *set of very
+different primitives* from "imperative programming".
+(If you get so used to FP that you can't feel the fact, just to see how [Prolog](https://en.wikipedia.org/wiki/Prolog) works and tell me how you feel.)
 
 REPL (and Jupyter/nREPL), shell and GUI
 
 the React idea: UI just a function of state
 
+map/filter/reduce
+
 interlude: typeclasses/concepts/protocols/interfaces/traits: ad-hoc polymorphism
 
-map/filter/reduce
+![Haskell Numbers](https://pic.blog.plover.com/prog/haskell/numbers/haskell-numbers-1.1.svg)
 
 interlude: array programming, and there's a language called APL/BQN/J/K
 (but Matlab & NumPy & Julia are the same idea in disguise)
@@ -1056,13 +1074,15 @@ what's being round-robined: state machine
 
 coroutine as state machine
 
-(stateless)
+(stackless)
+
+---
 
 another way: 
 
 manipulation of stack (context switch)
 
-(stateful)
+(stackful)
 
 pre-emptive or not? that's a question
 
