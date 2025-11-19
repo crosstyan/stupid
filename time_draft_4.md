@@ -1,8 +1,3 @@
-Yeah, this is exactly the chapter where Time = the Real walks in and ruins everyone’s neat model (x
-Let me give you a version you can more or less drop in, with your lines kept and the Lacan salt sprinkled on top.
-
----
-
 ## Time
 
 and so on we haven't introduced Time yet (the very thing floating in the air)

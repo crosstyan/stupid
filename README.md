@@ -1075,6 +1075,8 @@ and "we" in "we call you" (the NVIC, the scheduler) are not the same figure, or
 it's not a symmetric relationship (there's no really calling)
 Also the subject is also ambiguous: the "you" is also different in both cases.
 
+See [Draft 4](./time_draft_4.md)
+
 ## Scheduler
 
 why `delay` is bad (in `Arduino` sense)
@@ -1097,6 +1099,8 @@ manipulation of stack (context switch)
 (stackful)
 
 pre-emptive or not? that's a question
+
+epilogue: tease of sync primitive, and why do we need condition variable?
 
 ## Everything is continuation
 
