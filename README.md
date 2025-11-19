@@ -1062,12 +1062,18 @@ first construct of non von Neumann architecture: interruption
 
 Timer as the simplest peripheral (from 555 to SysTick)
 *why it's necessary? CPU doesn't know time by itself*
-(and pre-emptive multitasking needs time, that's another story)
+
+> say when
 
 push/pull model (and the duality of it)
 
 epilogue: The Hollywood Principle: "Don't call us, we call you"
-Who is "we"?
+Who is "we"? 
+
+It's a bad analogy since "us" in "don't call us" (the condition, the register)
+and "we" in "we call you" (the NVIC, the scheduler) are not the same figure, or
+it's not a symmetric relationship (there's no really calling)
+Also the subject is also ambiguous: the "you" is also different in both cases.
 
 ## Scheduler
 
