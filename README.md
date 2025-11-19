@@ -1066,6 +1066,9 @@ Timer as the simplest peripheral (from 555 to SysTick)
 
 push/pull model (and the duality of it)
 
+epilogue: The Hollywood Principle: "Don't call us, we call you"
+Who is "we"?
+
 ## Scheduler
 
 why `delay` is bad (in `Arduino` sense)
