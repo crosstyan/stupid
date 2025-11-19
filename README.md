@@ -556,13 +556,33 @@ Remember [struct](#struct)'s other name? **Product type**.
 
 Now we have **Sum type**.
 
-### Epilogue
+### Epilogue (module and struct are the same picture)
+
+`class` is `struct` with default access specifier `private` in C++.
+
+and `module` is a struct with all its members `static`, or a sigleton `class` in OO's perspective.
+
+Although C/C++ doesn't have the concept of `module` (except C++20 module, which nobody uses yet), they only know compilation unit (translation unit).
+
+Zig has made this fact clear: every file is a struct, which you can `import` and access its members, which is what we often call `module` in other languages.
+
+While in OCaml, we could have a [`functor`](https://ocaml.org/docs/functors) to
+generate modules from other modules, C++ has templates to achieve similar goals.
+
+> A functor in OCaml is a parametrised module, not to be confused with a [functor in mathematics](https://en.wikipedia.org/wiki/Functor).
+
+For the variables/fields inside a module/struct, they must live somewhere in
+memory.  If you could figure that out, you might grasp the mi-dire.  After all, `this` just a hidden pointer passed as the first
+argument to member functions.
+
+---
 
 This is the end of C types.
 (is it?)
 
 If you're the one who is familiar with C, you might have noticed that there's something I (intentionally) missed.
 
+[alternative version](./types_epilogue_draft_1.md)
 ## Assembly
 
 Go back to Turing machines / von Neumann architecture and
@@ -787,6 +807,8 @@ It looks like about stack vs heap (but actually not really)
 
 stack & heap are human constructs to manage flat memory.
 (and I permit you to have a better imagination)
+
+`static` storage class
 
 Zig's explicit memory allocation model
 
@@ -1022,7 +1044,8 @@ incomplete
 
 mangling/function overloading/linking
 
-and what `static` really means (in both linkage and storage class sense)
+`static`'s implications of internal linkage (and what's a global variable?)
+and why do we need `extern`
 
 ### See also (Assembly)
 
