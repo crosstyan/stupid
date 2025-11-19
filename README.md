@@ -1030,16 +1030,19 @@ different primitives* from "imperative programming".
 
 REPL (and Jupyter/nREPL), shell and GUI
 
-the React idea: UI just a function of state
-
-map/filter/reduce
-
-interlude: typeclasses/concepts/protocols/interfaces/traits: ad-hoc polymorphism
+typeclasses/concepts/protocols/interfaces/traits: ad-hoc polymorphism;
+i.e. the story of Haskell numbers. Instead of classify them by size
+(`uint8_t`/`uint16_t`/`uint32_t`) or representation (integer/IEEE754/fixed
+point), we classify them by *behavior* (what operations they support).
 
 ![Haskell Numbers](https://pic.blog.plover.com/prog/haskell/numbers/haskell-numbers-1.1.svg)
 
+map/filter/reduce
+
 interlude: array programming, and there's a language called APL/BQN/J/K
 (but Matlab & NumPy & Julia are the same idea in disguise)
+
+the React idea: UI just a function of state
 
 epilogue: What's a monad? (plant a seed, not fully explain, just list some examples)
 (List, Optional/Maybe, Result/Either)
