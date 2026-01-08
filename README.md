@@ -165,7 +165,7 @@ low addresses  -->  high addresses
 |0D|0C |0B |0A |  # little-endian
 ```
 
-> [!IMPORTANT] MSB/LSB
+> [!IMPORTANT]
 > "Most Significant" and "Least Significant" bit.
 >
 > "Significance" here means "how much weight this position carries *as a number*":
