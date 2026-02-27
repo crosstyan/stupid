@@ -150,7 +150,7 @@ essentially:
 
 Back to computers.
 
-Due to the flat memory model, and a given address grows direction, how would you
+Due to the flat memory model, and given that addresses grow in one direction, how would you
 interpret a multi-byte integer stored in consecutive memory addresses?
 
 ```txt
@@ -193,7 +193,7 @@ Here, "endianness problem" means you swapped whole words: `hello world` → `wor
 hello`.  "Significance problem" means you scrambled the characters *inside* each
 word, as if the bits in a byte were being read in the opposite order.
 
-*note that, if you changes the low/high address direction, the endianness would be flipped too*
+*note that, if you change the low/high address direction, the endianness would be flipped too*
 
 Usually the significance won't be a problem (any sane system would do MSB first inside a byte)
 However, the problem of significance mostly relate to bitfields. i.e.
@@ -206,7 +206,7 @@ struct bit_field_plex {
 ```
 
 which comes first, `a` or `b`? it depends on the compiler implementation.
-(but *usually* it's LSB as first field, and for each number of field, MSB first inside the field)
+(but *usually* it's LSB as first field, and for each field, MSB first inside the field)
 
 > [!WARNING]
 > by usually I mean most of the little endian common compilers implementations, your mileage may vary
@@ -290,7 +290,7 @@ International encoding (Unicode):
 - UTF-16
 - UTF-32
 
-Indeed, we have an problem of efficiency here and some Chinese keeps arguing
+Indeed, we have a problem of efficiency here and there's a recurring argument
 about that. However, we have compression, so let's stop arguing about the
 encoding and just use UTF-8
 
@@ -347,6 +347,7 @@ In its reference manual, see:
 
 
 It's quite hard to explain without introducing Von Neumann architecture, Harvard
+architecture, and what instruction memory (what we call ROM/Flash) and data memory (what we call RAM) are.
 architecture, and what a instruction memory (what we call ROM/Flash) and data memory (what we call RAM) are.
 
 > trivia: there's also IO to handle; CPU is just a dumb calculator, things
@@ -370,7 +371,7 @@ numeric index. Elements are allocated consecutively in memory.
 > 
 > -- [GNU C Language Manual](https://www.gnu.org/software/c-intro-and-ref/manual/html_node/Arrays.html)
 
-except VLA (variable-length array), which just a fancy `alloca`
+except VLA (variable-length array), which is just a fancy `alloca`
 
 ---
 
@@ -409,7 +410,7 @@ equivalent to
 char str[6] = {0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00};
 ```
 
-Did I said a single quote `'` is for a single character?
+Did I say a single quote `'` is for a single character?
 (I'm not teaching you C syntax here, just a reminder)
 
 My opinion is here: it's a bad design, please go for slice/span/view, if you
@@ -420,7 +421,7 @@ have a choice (often you don't, sadly)
 
 someone said it's fat. (it is fat)
 
-to proper write it down, you would need have to know [`struct`](#struct) first.
+to properly write it down, you would need have to know [`struct`](#struct) first.
 
 spoiler alert:
 
@@ -490,14 +491,14 @@ I refuse the latter, because technically that's:
 - an anonymous struct
 - that’s been given a name only via `typedef`.
 
-It works, but the struct itself is never get registerd in the struct namespace.
+It works, but the struct itself never gets registered in the struct namespace.
 I like my structs (or plexes) named.
 
 ---
 
 Why the `typedef` dance? 
 
-cuz C struct lives in a different namespace than other types, unlike C++.
+cuz C structs live in a different namespace than other types, unlike C++.
 
 ---
 
@@ -540,7 +541,7 @@ Reinterpret the same memory block in different ways.
 
 Enum
 
-Just a named integer constant and Go even doesn't have enum.
+Just a named integer constant and Go doesn't even have enum.
 
 [atom](https://www.erlang.org/doc/system/data_types.html#atom) is way more interesting, but it's not in C.
 
@@ -560,9 +561,9 @@ Now we have **Sum type**.
 
 `class` is `struct` with default access specifier `private` in C++.
 
-and `module` is a struct with all its members `static`, or a sigleton `class` in OO's perspective.
+and `module` is a struct with all its members `static`, or a singleton `class` in OO's perspective.
 
-Although C/C++ doesn't have the concept of `module` (except C++20 module, which nobody uses yet), they only know compilation unit (translation unit).
+Although C/C++ don't have the concept of `module` (except C++20 module, which nobody uses yet), they only know compilation unit (translation unit).
 
 Zig has made this fact clear: every file is a struct, which you can `import` and access its members, which is what we often call `module` in other languages.
 
@@ -583,6 +584,8 @@ This is the end of C types.
 If you're the one who is familiar with C, you might have noticed that there's something I (intentionally) missed.
 
 [alternative version](./types_epilogue_draft_1.md)
+
+## Assembly
 ## Assembly
 
 Go back to Turing machines / von Neumann architecture and
@@ -647,7 +650,7 @@ When we say the word *register*, we might mean a quite different thing
 - Flip-flop/latch, who remember bits (do they really "remember"/"memorize"? or
 are we anthropomorphizing circuits?)
 - the small boxes inside the CPU, where we do calculations (ALU's)
-- thouse indicate the state of CPU (like PC, SP, etc) they have nothing to do
+- those that indicate the state of CPU (like PC, SP, etc) they have nothing to do
 with calculation
 - some special memory addresses, when we read/write to them, it's not really
 memory access (although we still treat them as memory, as von Neumann's magic
@@ -679,7 +682,7 @@ of such locations in a central processing unit. (Oxford English Dictionary)
 So, to positively define "register" is fuzzy and context-dependent.
 But we can at least say what a register is not:
 
-> memory in broder sense, nontheless the data or instruction memory, reguardless the medium:
+> memory in broader sense, nonetheless the data or instruction memory, regardless the medium:
 RAM, ROM, Flash, disk, tape, punch card, etc.
 
 To make things more confusing, von Neumann architecture encourages us to *pretend*:
@@ -765,8 +768,8 @@ if not zero/zero (ARM)
 
 ---
 
-A defend of using `goto` in **C**:
-C just such a incomplete/lack of feature of a language;
+A defense of using `goto` in **C**:
+C is just such an incomplete language;
 
 If C has (in my personal priority order): 
 
@@ -930,9 +933,9 @@ The important part isn't the exact opcode spelling; it's the pattern:
 So when we say in C:
 
 ```cpp
-extern int32_t some_arbitary_number;
+extern int32_t some_arbitrary_number;
 
-register int32_t *p = &some_arbitary_number; // a0
+register int32_t *p = &some_arbitrary_number; // a0
 register int32_t x = *p; // t0
 *p = x + 1;
 ```
@@ -1066,9 +1069,9 @@ Let's see what a different set of primitives could give us.
 
 the idea of interpreter, *without registers or a flat memory model*.
 
-So called "declearative programming" is actually built on a *set of very
+So called "declarative programming" is actually built on a *set of very
 different primitives* from "imperative programming".
-(If you get so used to FP that you can't feel the fact, just to see how [Prolog](https://en.wikipedia.org/wiki/Prolog) works and tell me how you feel.)
+(If you get so used to FP that you can't feel the fact, just see how [Prolog](https://en.wikipedia.org/wiki/Prolog) works and tell me how you feel.)
 
 REPL (and Jupyter/nREPL), shell and GUI
 
